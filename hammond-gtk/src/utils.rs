@@ -201,19 +201,21 @@ pub fn set_image_from_path(
     let image = image.clone();
     let s = size as i32;
     gtk::timeout_add(25, move || {
-        if let Ok(path) = receiver.try_recv() {
-            if let Ok(path) = path {
-                if let Ok(px) = Pixbuf::new_from_file_at_scale(&path, s, s, true) {
-                    if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
-                        hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
-                        image.set_from_pixbuf(&px);
-                    }
-                }
-            }
-            glib::Continue(false)
-        } else {
-            glib::Continue(true)
-        }
+        receiver
+            .try_recv()
+            .map(|res| {
+                res.ok()
+                    .and_then(|path| Pixbuf::new_from_file_at_scale(&path, s, s, true).ok())
+                    .map(|px| {
+                        if let Ok(mut hashmap) = CACHED_PIXBUFS.write() {
+                            hashmap.insert((pd.id(), size), Mutex::new(SendCell::new(px.clone())));
+                            image.set_from_pixbuf(&px);
+                        }
+                    })
+                    .map(|_| glib::Continue(false))
+                    .unwrap_or(glib::Continue(false))
+            })
+            .unwrap_or(glib::Continue(true))
     });
     Ok(())
 }
