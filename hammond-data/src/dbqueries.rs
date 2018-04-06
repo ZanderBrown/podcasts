@@ -185,13 +185,13 @@ pub fn get_pd_episodes_count(parent: &Podcast) -> Result<i64, DataError> {
         .map_err(From::from)
 }
 
-pub fn get_pd_episodeswidgets(parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
+pub fn get_pd_episodeswidgets(_parent: &Podcast) -> Result<Vec<EpisodeWidgetQuery>, DataError> {
     use schema::episode::dsl::*;
     let db = connection();
     let con = db.get()?;
 
     episode.select((rowid, title, uri, local_uri, epoch, length, duration, played, podcast_id))
-        .filter(podcast_id.eq(parent.id()))
+        // .filter(podcast_id.eq(parent.id()))
         // .group_by(epoch)
         .order(epoch.desc())
         .load::<EpisodeWidgetQuery>(&con)
