@@ -69,7 +69,6 @@ impl ShowStack {
             .downcast::<gtk::Box>()
             .map_err(|_| format_err!("Failed to downcast stack child to a Box."))?;
         debug!("Name: {:?}", WidgetExt::get_name(&old));
-
         let scrolled_window = old.get_children()
             .first()
             .ok_or_else(|| format_err!("Box container has no childs."))?

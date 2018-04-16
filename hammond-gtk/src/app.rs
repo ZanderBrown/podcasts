@@ -151,7 +151,6 @@ impl App {
         WindowGeometry::from_settings(&self.settings).apply(&self.window);
 
         let window = self.window.clone();
-
         self.app_instance.connect_startup(move |app| {
             build_ui(&window, app);
         });
@@ -175,8 +174,8 @@ impl App {
                     content
                         .get_shows()
                         .replace_widget(pd.clone())
-                        .map_err(|err| error!("Failed to update ShowWidget: {}", err))
-                        .map_err(|_| error!("Failed ot update ShowWidget {}", pd.title()))
+                        .map_err(|err| error!("Error: {}", err))
+                        .map_err(|_| error!("Failed to update ShowWidget of {}", pd.title()))
                         .ok();
                 }
                 Ok(Action::ShowWidgetAnimated) => content.get_shows().switch_widget_animated(),

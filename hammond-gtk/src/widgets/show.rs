@@ -29,6 +29,7 @@ pub struct ShowWidget {
     settings: gtk::MenuButton,
     unsub: gtk::Button,
     episodes: gtk::ListBox,
+    progress_bar: gtk::ProgressBar,
 }
 
 impl Default for ShowWidget {
@@ -43,6 +44,7 @@ impl Default for ShowWidget {
         let unsub: gtk::Button = builder.get_object("unsub_button").unwrap();
         let link: gtk::Button = builder.get_object("link_button").unwrap();
         let settings: gtk::MenuButton = builder.get_object("settings_button").unwrap();
+        let progress_bar = builder.get_object("progress_bar").unwrap();
 
         ShowWidget {
             container,
@@ -53,6 +55,7 @@ impl Default for ShowWidget {
             link,
             settings,
             episodes,
+            progress_bar,
         }
     }
 }
@@ -147,6 +150,7 @@ impl ShowWidget {
         }
 
         let list = self.episodes.clone();
+        let bar = self.progress_bar.clone();
         gtk::idle_add(move || {
             let episodes = match receiver.try_recv() {
                 Ok(e) => e,
@@ -154,7 +158,16 @@ impl ShowWidget {
                 Err(Disconnected) => return glib::Continue(false),
             };
 
-            let constructor = clone!(sender => move |ep| {
+            let mut done = 0;
+            let constructor = clone!(sender, bar => move |ep| {
+                done += 1;
+                if done >= count {
+                    bar.hide()
+                }
+
+                let fraction = done as f64 / count as f64;
+                bar.set_fraction(fraction);
+
                 EpisodeWidget::new(ep, sender.clone()).container
             });
 
@@ -164,6 +177,7 @@ impl ShowWidget {
                     .ok();
             });
 
+            bar.show();
             lazy_load(episodes, list.clone(), constructor, callback);
 
             glib::Continue(false)
