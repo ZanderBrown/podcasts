@@ -10,7 +10,7 @@ use gtk::prelude::*;
 use gtk::SettingsExt as GtkSettingsExt;
 
 use crossbeam_channel::{unbounded, Sender};
-use hammond_data::Podcast;
+use hammond_data::{Podcast, dbqueries};
 
 use headerbar::Header;
 use settings::{self, WindowGeometry};
@@ -53,6 +53,7 @@ pub enum Action {
     MarkAllPlayerNotification(Arc<Podcast>),
     RemoveShow(Arc<Podcast>),
     ErrorNotification(String),
+    AboutWidget(i32),
 }
 
 #[derive(Debug)]
@@ -178,6 +179,13 @@ impl App {
                                 let notif = InAppNotification::new(&err, callback,
                                                                    || {}, UndoState::Hidden);
                                 notif.show(&overlay);
+                            }
+                            Ok(Action::AboutWidget(rowid)) => {
+                                if let Ok(d) = dbqueries::get_episode_description(rowid) {
+                                    if let Some(_desc) = d {
+                                        let _stack = content.get_visible_stack();
+                                    }
+                                }
                             }
                             Err(_) => (),
                         }

@@ -129,6 +129,18 @@ pub fn get_episode_local_uri_from_id(ep_id: i32) -> Result<Option<String>, DataE
         .map_err(From::from)
 }
 
+pub fn get_episode_description(rowid_: i32) -> Result<Option<String>, DataError> {
+    use schema::episode::dsl::*;
+    let db = connection();
+    let con = db.get()?;
+
+    episode
+        .filter(rowid.eq(rowid_))
+        .select(description)
+        .get_result::<Option<String>>(&con)
+        .map_err(From::from)
+}
+
 pub fn get_episodes_widgets_filter_limit(
     filter_ids: &[i32],
     limit: u32,
@@ -360,7 +372,18 @@ pub(crate) fn episode_exists(title_: &str, podcast_id_: i32) -> Result<bool, Dat
         .map_err(From::from)
 }
 
-/// Check if the `episode table contains any rows
+pub fn episode_had_description(rowid_: i32) -> Result<bool, DataError> {
+    use schema::episode::dsl::*;
+
+    let db = connection();
+    let con = db.get()?;
+
+    select(exists(episode.filter(rowid.eq(rowid_))))
+        .get_result(&con)
+        .map_err(From::from)
+}
+
+/// Check if the `episode` table contains any rows
 ///
 /// Return true if `episode` table is populated.
 pub fn is_episodes_populated() -> Result<bool, DataError> {

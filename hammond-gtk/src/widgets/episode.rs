@@ -65,6 +65,7 @@ struct Buttons {
     play: gtk::Button,
     download: gtk::Button,
     cancel: gtk::Button,
+    desc: gtk::Button,
 }
 
 impl InfoLabels {
@@ -168,6 +169,7 @@ impl Default for EpisodeWidget {
         let download = builder.get_object("download_button").unwrap();
         let play = builder.get_object("play_button").unwrap();
         let cancel = builder.get_object("cancel_button").unwrap();
+        let desc_button = builder.get_object("desc_button").unwrap();
 
         let info_container = builder.get_object("info_container").unwrap();
         let title = builder.get_object("title_label").unwrap();
@@ -198,6 +200,7 @@ impl Default for EpisodeWidget {
                 play,
                 download,
                 cancel,
+                desc: desc_button,
             },
             progressbar,
             container,
@@ -213,6 +216,32 @@ impl EpisodeWidget {
             .map_err(|err| error!("Error: {}", err))
             .ok();
         widget
+            .on_desc_clicked(episode, sender)
+            .map_err(|err| error!("Error: {}", err))
+            .ok();
+        widget
+    }
+
+    fn on_desc_clicked(
+        &self,
+        episode: &EpisodeWidgetQuery,
+        sender: &Sender<Action>,
+    ) -> Result<(), Error> {
+        let id = episode.rowid();
+        if dbqueries::episode_had_description(id)? {
+            self.buttons.desc.show();
+            self.buttons
+                .desc
+                .connect_clicked(clone!(sender => move |_| {
+                sender.send(Action::AboutWidget(id))
+                    .map_err(|err| error!("Action Sender: {}", err))
+                    .ok();
+            }));
+            Ok(())
+        } else {
+            self.buttons.desc.hide();
+            Ok(())
+        }
     }
 
     // fn init(widget: Rc<Self>, sender: &Sender<Action>) {}

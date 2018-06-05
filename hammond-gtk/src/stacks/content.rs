@@ -85,4 +85,8 @@ impl Content {
     pub fn get_shows(&self) -> Rc<RefCell<ShowStack>> {
         self.shows.clone()
     }
+
+    pub fn get_visible_stack(&self) -> Option<gtk::Stack> {
+        self.stack.get_visible_child().and_then(|w| w.downcast::<gtk::Stack>().ok())
+    }
 }
