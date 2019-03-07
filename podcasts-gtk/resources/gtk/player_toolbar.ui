@@ -340,6 +340,42 @@ Tobias Bernard
         <property name="orientation">vertical</property>
         <property name="spacing">3</property>
         <child>
+          <object class="GtkRadioButton" id="rate_2_00">
+            <property name="label" translatable="yes">2.00×</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">2 speed rate</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="draw_indicator">True</property>
+            <property name="group">normal_rate</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkRadioButton" id="rate_1_75">
+            <property name="label" translatable="yes">1.75×</property>
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">1.75 speed rate</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="draw_indicator">True</property>
+            <property name="group">normal_rate</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
           <object class="GtkRadioButton" id="rate_1_50">
             <property name="label" translatable="yes">1.50×</property>
             <property name="visible">True</property>
@@ -354,7 +390,7 @@ Tobias Bernard
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">0</property>
+            <property name="position">2</property>
           </packing>
         </child>
         <child>
@@ -372,7 +408,7 @@ Tobias Bernard
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -390,7 +426,7 @@ Tobias Bernard
           <packing>
             <property name="expand">True</property>
             <property name="fill">True</property>
-            <property name="position">2</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>

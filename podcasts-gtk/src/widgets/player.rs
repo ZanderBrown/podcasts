@@ -175,6 +175,8 @@ fn format_duration(seconds: u32) -> String {
 
 #[derive(Debug, Clone)]
 struct PlayerRate {
+    radio200: gtk::RadioButton,
+    radio175: gtk::RadioButton,
     radio150: gtk::RadioButton,
     radio125: gtk::RadioButton,
     radio_normal: gtk::RadioButton,
@@ -275,6 +277,8 @@ impl Default for PlayerWidget {
             episode_id: RefCell::new(None),
         };
 
+        let radio200 = builder.get_object("rate_2_00").unwrap();
+        let radio175 = builder.get_object("rate_1_75").unwrap();
         let radio150 = builder.get_object("rate_1_50").unwrap();
         let radio125 = builder.get_object("rate_1_25").unwrap();
         let radio_normal = builder.get_object("normal_rate").unwrap();
@@ -282,6 +286,8 @@ impl Default for PlayerWidget {
         let btn = builder.get_object("rate_button").unwrap();
         let label = builder.get_object("rate_label").unwrap();
         let rate = PlayerRate {
+            radio200,
+            radio175,
             radio150,
             radio125,
             radio_normal,
@@ -580,6 +586,18 @@ impl PlayerWrapper {
             .radio150
             .connect_toggled(clone!(weak => move |_| {
                 weak.upgrade().map(|p| p.on_rate_changed(1.50));
+            }));
+
+        self.rate
+            .radio175
+            .connect_toggled(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.on_rate_changed(1.75));
+            }));
+
+        self.rate
+            .radio200
+            .connect_toggled(clone!(weak => move |_| {
+                weak.upgrade().map(|p| p.on_rate_changed(2.00));
             }));
     }
 
